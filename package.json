@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/gbradthompson/youtube-related/issues"
   },
-  "homepage": "https://github.com/gbradthompson/youtube-related#readme"
+  "homepage": "https://github.com/gbradthompson/youtube-related#readme",
+  "dependencies": {
+    "mongodb": "^3.0.10"
+  }
 }
