@@ -8,9 +8,11 @@ class Mongo {
     this._client = false
   }
 
-  close () {
+  async close () {
     if (this._client) {
-      this._client.close()
+      await this._client.close()
+      this._db = false
+      this._client = false
     }
   }
 
@@ -18,7 +20,7 @@ class Mongo {
     if (this._db) {
       return this._db
     } else {
-      let client = await MongoClient.connect(this._url, { useNewUrlParser: true })
+      let client = await MongoClient.connect(this._url)
       this._db = client.db(this._dbName)
       this._client = client
       return this._db

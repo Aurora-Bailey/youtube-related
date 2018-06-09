@@ -1,26 +1,10 @@
-const Mongo = require('./mongo.js')
-const youtubeScraper = new Mongo('youtube-scraper')
+const cluster = require('cluster')
+global.__basedir = __dirname
 
-class Main {
-  constructor () {
-    this.run()
-  }
-
-  run () {
-    try {
-      this.getData()
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  async getData () {
-    let db = await youtubeScraper.getDB()
-    let x = await db.collection('crawled').find({}, {limit: 1}).toArray()
-    console.log('x')
-    console.log(x)
-    youtubeScraper.close()
-  }
+if (cluster.isMaster) {
+  const Master = require('./master')
+  const master = new Master(cluster)
+} else {
+  const Worker = require(process.env.WORKER_SCRIPT)
+  const worker = new Worker(cluster)
 }
-
-const main = new Main()
