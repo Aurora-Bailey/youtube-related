@@ -22,7 +22,7 @@ async function start () {
     let endChunk = startChunk + chunkSize
     // console.log('chunk', chunkSize, JSON.stringify({crawlDate: {$gt: startChunk, $lt: endChunk}}))
     let largest = await db.collection('channel_info').find({crawlDate: {$gt: startChunk, $lt: endChunk}}).limit(1).sort({"info.statistics.subscriberCount": -1}).toArray()
-    let sum = await db.collection('channel_info').find({crawlDate: {$gt: startChunk, $lt: endChunk}}, {"info.statistics.subscriberCount": 1}).toArray()
+    let sum = await db.collection('channel_info').find({crawlDate: {$gt: startChunk, $lt: endChunk}}, {projection: {"info.statistics.subscriberCount": 1, _id: 0}}).toArray()
     console.log(sum[0])
     console.log(sum[0].info.statistics.subscriberCount)
     console.log(sum.reduce((a, c) => { return parseInt(a) + parseInt(c.info.statistics.subscriberCount) }), 0)
