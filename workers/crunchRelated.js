@@ -9,27 +9,45 @@ class CrunchRelated {
     this.i = parseInt(process.env.WORKER_I)
     this.skip = parseInt(process.env.WORKER_SKIP)
     this.limit = parseInt(process.env.WORKER_LIMIT)
+    this.data = false
+    this.ready = false
     console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} ${chalk.green(process.env.WORKER_SCRIPT)} started! {skip: ${chalk.yellow(this.skip)}, limit: ${chalk.yellow(this.limit)}`)
 
-    this.run()
+    this.setup()
   }
 
-  async run () {
-    try {
-      let data = this.getData()
-      crunch(data)
-    } catch (e) {
-      console.log(e)
+  crunch (channelList) {
+    // console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} crunch data...`)
+    this.data.forEach(channel => {
+      let subs = channel.subscriptions
+      channelList.forEach(channelItem => {
+
+      })
+
+    })
+
+  }
+
+  message (text) {
+    let msg = JSON.parse(text)
+    if (msg.m === "crunch") {
+      this.crunch(msg.channels)
     }
   }
 
-  crunch (data) {
-    console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} crunch data...`)
-
+  async setup () {
+    process.on('message', this.message)
+    this.data = await this.getData()
+    this.ready = true
+    process.send(JSON.stringify({
+      m: 'setup',
+      v: true
+    }))
+    console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} ready`)
   }
 
   async getData () {
-    console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} loading data from MongoDB...`)
+    // console.log(`${chalk.bgGreen.black(' ' + this.i + ' ')}${lib.memoryUsed()}${lib.stopwatch()} loading data from MongoDB...`)
     let db = await youtubeScraper.getDB()
     let data = await db.collection('channel_subscriptions').find({}, {limit: this.limit, skip: this.skip}).toArray()
     youtubeScraper.close()
