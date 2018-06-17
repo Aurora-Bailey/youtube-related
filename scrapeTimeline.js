@@ -25,7 +25,7 @@ async function start () {
     let sum = await db.collection('channel_info').find({crawlDate: {$gt: startChunk, $lt: endChunk}}, {projection: {"info.statistics.subscriberCount": 1, _id: 0}}).toArray()
     console.log(sum[0])
     console.log(sum[0].info.statistics.subscriberCount)
-    console.log(sum.reduce((a, c) => { return parseInt(a) + parseInt(c.info.statistics.subscriberCount) }), 0)
+    console.log(sum.map(v => {return v.info.statistics.subscriberCount}).reduce((a, c) => { return parseInt(a) + parseInt(c) }))
     if (largest.length === 0) continue
     let date = new Date(largest[0].crawlDate)
     console.log([date.toJSON(), largest[0].info.id, largest[0].info.snippet.title, largest[0].info.statistics.subscriberCount].join(','))
