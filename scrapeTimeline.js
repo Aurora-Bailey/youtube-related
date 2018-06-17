@@ -28,6 +28,7 @@ async function start () {
     let sum = subscriberCount.map(v => {return v.info.statistics.subscriberCount}).reduce((a, c) => { return parseInt(a) + parseInt(c) })
     let date = new Date(largest[0].crawlDate)
     console.log([date.toJSON(), largest[0].info.id, largest[0].info.snippet.title, largest[0].info.statistics.subscriberCount, sum].join(','))
+    subscriberCount = ''
   }
   console.log('DONE!')
 }
